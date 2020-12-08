@@ -9,8 +9,9 @@ This a webserver made in the night while i was bored
   **INDEXFILE** = The File the server should send if the browser asks for / ,***default*** index.html<br>
   **DEFAULTDIR** = The directory where the files are in ,including ***INDEXFILE*** ,***default*** www/<br>
   **REDIRECT** = Enable/Disable Redirection if 404 found (currently not working well), ***default*** false<br>
-  **REDIRECT_PAGE** = If ***REDIRECT*** is ***true*** ,it will redirect to the page typed here,***default*** /<br>
-
+  **REDIRECT_LOCATION** = If ***REDIRECT*** is ***true*** ,it will redirect to the page typed here,***default*** /<br>
+  **404PAGE** = The Location of 404 Not Found Page, ***default*** errors/404.html<br>
+  ***404_ERROR_PAGE_TOGGLE*** = If disabled the browser will show its default 404 Page else The browser will show ***404PAGE***, ***default*** false<br>
 3. Change The options as you like or leave them as default<br>
 4. Run <code>python main.py</code> ,if ***1 <= PORT <= 1023 Run it as administrator***<br>
 
