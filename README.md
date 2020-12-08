@@ -14,6 +14,9 @@ This a webserver made in the night while i was bored
 
 ## Contribute
 Just contact me check the github profile
+## Versions
+Ashita Webserver == 1.0
+Python = 3.X
 
 ## Thanks
 Thanks for passing by
