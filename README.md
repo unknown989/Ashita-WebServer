@@ -9,7 +9,7 @@ This a webserver made in the night while i was bored
   **INDEXFILE** = The File the server should send if the browser asks for / ,***default*** index.html<br>
   **DEFAULTDIR** = The directory where the files are in ,including INDEXFILE ,***default*** www/<br>
 
-3. Change The options as you like or leave them as default</ br>
+3. Change The options as you like or leave them as default<br>
 4. Run <code>python main.py</code> ,if ***1 <= PORT <= 1023 Run it as administrator***<br>
 
 ## Contribute
