@@ -18,7 +18,7 @@ This a webserver made in the night while i was bored
 Just contact me check the github profile
 ## Versions
 **Ashita Webserver** == 1.0<br>
-**Python** == 3.X**<br>
+**Python** == 3.X<br>
 
 ## Thanks
 Thanks for passing by
