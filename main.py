@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import socket
 import sys
 from configparser import ConfigParser as cp
@@ -13,14 +15,15 @@ class Server():
 
         host = sc["HOST"]
         port = sc["PORT"]
-        self.redirect = sc["REDIRECT"]
-        self.redirect = True if self.redirect == "true" else False
-        if self.redirect:
-            self.redirect_page = sc["REDIRECT_PAGE"]
-        else:
-            pass
         self.mainFile = sc["INDEXFILE"]
         self.defDir = sc["DEFAULTDIR"]
+        self.redirect = sc["REDIRECT"]
+        self.shownotfounderrorinpage = sc["404_ERROR_PAGE_TOGGLE"]
+        self.shownotfounderrorinpage = True if self.shownotfounderrorinpage == "true" else False
+        self.redirect = True if self.redirect == "true" else False
+        self.redirectloc = sc["REDIRECT_LOCATION"]
+        self.error404 = sc["404PAGE"]
+        self.error404 = self.defDir+self.error404 if self.defDir.endswith("/") else self.defDir+"/"+self.error404
         self.ip,self.cl = [],[]
         
         self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -29,19 +32,20 @@ class Server():
         print("Listening...")
         self.s.listen()
         print("Starting The Thread For Accepting Connections...")
-        snt(self.accept())
+        snt(self.acceptClients())
         print("Done")
         self.s.close()
-    def accept(self):
+    def acceptClients(self):
         while True:
             i,c = self.s.accept()
             self.ip.append(i)
             self.cl.append(c)
             filename = i.recv(1024)
+            print(filename.decode())
             filename = filename.split()[1]
             filename = filename.decode()
             #print("FILENAME REQUESTES : "+str(filename))
-            self.sendMsg("HTTP/1.0 200 OK\r\n\r\n",i)
+            
             if filename == "/":
                 filename = self.defDir+"/"+self.mainFile if not self.defDir.endswith("/") else self.defDir+"/"+self.mainFile
             else:
@@ -51,36 +55,26 @@ class Server():
                     filename = self.defDir+"/"+filename if not self.defDir.endswith("/") else self.defDir+"/"+self.mainFile
             print("FILENAME REQUESTES : "+str(filename))
             try:
-                if not filename.endswith("ico"):
-                    with open(filename,"r") as f:
-                        content = f.read()
-                    for cc in content:
-                        self.sendMsg(str(cc),i)
+                with open(filename,"r") as f:
+                    content = f.read()
+                self.sendMsg("HTTP/1.0 200 OK\r\n\r\n".encode(encoding="utf8"),i)
+                for cc in content:
+                    self.sendMsg(str(cc).encode(encoding="utf8"),i)
+            except Exception as e:
+                print(str(e))
+                if self.redirect:
+                    self.sendMsg("HTTP/1.1 303 See Other\r\nLocation: {}\r\n".format(self.redirectloc).encode(encoding="utf8"),i)
                 else:
-                    with open(filename,"rb") as f:
-                        content = f.read()
-                    for cc in content:
-                        self.sendMsg(cc.encode(),i,enc=False)
-            except:
-                if not self.redirect:
-                    self.sendMsg(str("HTTP/1.0 404 Not Found\r\n\r\n"),i)
-                else:
-                    #if not filename.find("favicon.ico"):
-                    self.sendMsg("HTTP/1.0 200 OK\r\n",i)
-                    self.sendMsg("Content-Type: text/html\r\n\r\n",i)
-                    #self.sendMsg(str("Location: {redirect_page}\r\n").format(redirect_page="/"+self.redirect_page if not self.redirect_page.startswith("/") else self.redirect_page),i)
-                    self.sendMsg(str("<html><body><script type='text/javascript'>window.location = '{}'</script></body></html>").format("/"+self.redirect_page if not self.redirect_page.startswith("/") else self.redirect_page),i)
-                    #else:
-                    #    self.sendMsg("HTTP/1.0 404 Not Found\r\n\r\n",i)
+                    self.sendMsg("HTTP/1.1 404 Not Found\r\n\r\n".encode(encoding="utf8"))
+                    if self.shownotfounderrorinpage:
+                        with open(self.error404,"r") as f:
+                            for ce in f.read():
+                                self.sendMsg(ce.encode(encoding="utf8"),i)
             i.close()
     
-    def sendMsg(self,msg,ip,enc=True):
-        if enc:
-            ip.send(msg.encode())
-            print("Sent...")
-        else:
-            ip.send(msg)
-            print("Sent No Encoded...")
+    def sendMsg(self,msg,ip):
+        ip.send(msg)
+        print("Sent : "+str(msg))
 
 
 # Running The Server
