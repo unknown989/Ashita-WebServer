@@ -1,0 +1,18 @@
+body{
+	background-color: #f51101;
+	margin:0;
+	padding: 0;
+}
+#main-div{
+	position:absolute;
+	top:50%;
+	left:50%;
+	transform:translate(-50%,-50%);
+	border: 1px solid black;
+	border-radius: 4px;
+	background-color: #eeffee;
+	text-align:center;
+	padding: 8px;
+	padding-left:16px;
+	padding-right:16px;
+}
