@@ -28,6 +28,7 @@ class Server():
             self.error404 = self.defDir+self.error404 if self.defDir.endswith("/") else self.defDir+"/"+self.error404
             self.ip,self.cl = [],[]
             self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+            self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.isFileBin = False
             try:
                 print("Binding...")
